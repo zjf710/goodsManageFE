@@ -56,6 +56,8 @@
 
 <script>
   import _ from 'lodash';
+  import { md5 } from 'vux';
+  import { setLocalStorageCache } from '../components/utils/CacheService';
 
   export default {
     name: 'login',
@@ -68,19 +70,13 @@
         loginDisabled: true
       };
     },
-    props: {
-      userType: {
-        type: Number,
-        default: 1
-      },
-    },
     methods: {
       onSubmit(e) {
         e.preventDefault();
 
         const params = {
           mobile: this.mobile,
-          password: this.password,
+          password: md5(this.password),
           type: this.type
         };
 
@@ -89,6 +85,8 @@
             const data = _.get(res, 'data', {});
 
             if (data.status === 200) {
+              setLocalStorageCache('user', this.mobile);
+              setLocalStorageCache('userType', this.type);
               this.$router.push('/');
             } else {
               this.$vux.toast.show({
@@ -109,7 +107,6 @@
         }
       },
       selectTab(index) {
-        console.log(this);
         this.type = index + 1;
         this.selectIndex = index;
       }

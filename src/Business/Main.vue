@@ -5,19 +5,19 @@
     </x-header>
     <router-view></router-view>
     <tabbar slot="bottom">
-      <tabbar-item selected link="/">
+      <tabbar-item :selected="$route.path === '/'" link="/">
         <svg slot="icon" class="svg-icon" aria-hidden="true">
           <use xlink:href="#icon-home"></use>
         </svg>
         <span slot="label">首页</span>
       </tabbar-item>
-      <tabbar-item link="/addGoods">
+      <tabbar-item v-if="userType === '1'" :selected="$route.path === '/addGoods'" link="/addGoods">
         <svg slot="icon" class="svg-icon" aria-hidden="true">
           <use xlink:href="#icon-plus"></use>
         </svg>
         <span slot="label">添加货源</span>
       </tabbar-item>
-      <tabbar-item>
+      <tabbar-item :selected="$route.path === '/center'" link="/center">
         <svg slot="icon" class="svg-icon" aria-hidden="true">
           <use xlink:href="#icon-user"></use>
         </svg>
@@ -28,25 +28,24 @@
 </template>
 
 <script>
+  import { getLocalStorageCache } from '../components/utils/CacheService';
 
   export default {
     data() {
+      const userType = getLocalStorageCache('userType');
       return {
-        // note: changing this line won't causes changes
-        // with hot-reload because the reloaded component
-        // preserves its current state and we are modifying
-        // its initial state.
-        msg: 'Hello World!'
+        userType
       };
     },
     methods: {
       getTitle() {
-        console.log(this.$route);
         switch (this.$route.path) {
           case '/':
             return '首页';
           case '/addGoods':
             return '添加货源';
+          case '/center':
+            return '个人中心';
           default:
             return '';
         }

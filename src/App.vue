@@ -27,6 +27,12 @@
     width: 100%;
     background-color: #fbf9fe;
     overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  input {
+    outline: none;
+    border: none;
   }
 
   #app {

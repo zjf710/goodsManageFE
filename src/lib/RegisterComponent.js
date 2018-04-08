@@ -4,6 +4,7 @@ import {
   Cell,
   Popup,
   XInput,
+  XTextarea,
   XDialog,
   XButton,
   XHeader,
@@ -11,10 +12,15 @@ import {
   TabbarItem,
   ButtonTab,
   ButtonTabItem,
+  Checker,
+  CheckerItem,
+  PopupPicker,
+  Datetime,
   Search,
   CheckIcon,
   ToastPlugin,
-  LoadingPlugin
+  LoadingPlugin,
+  TransferDom
 } from 'vux';
 
 import ViewBox from '../components/ViewBox/ViewBox';
@@ -23,12 +29,16 @@ import ViewBox from '../components/ViewBox/ViewBox';
 export default (VueTemp) => {
   const Vue = VueTemp;
 
+  // 指令
+  Vue.directive('transfer-dom', TransferDom);
+
   // 第三方组件
   Vue.component('XButton', XButton);
   Vue.component('group', Group);
   Vue.component('groupTitle', GroupTitle);
   Vue.component('cell', Cell);
   Vue.component('XInput', XInput);
+  Vue.component('XTextarea', XTextarea);
   Vue.component('popup', Popup);
   Vue.component('search', Search);
   Vue.component('checkIcon', CheckIcon);
@@ -38,6 +48,10 @@ export default (VueTemp) => {
   Vue.component('TabbarItem', TabbarItem);
   Vue.component('ButtonTab', ButtonTab);
   Vue.component('ButtonTabItem', ButtonTabItem);
+  Vue.component('Checker', Checker);
+  Vue.component('CheckerItem', CheckerItem);
+  Vue.component('PopupPicker', PopupPicker);
+  Vue.component('Datetime', Datetime);
 
   // 本地组件
   Vue.component('viewBox', ViewBox);

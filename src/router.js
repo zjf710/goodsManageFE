@@ -3,6 +3,7 @@ import Home from './Business/Home';
 import addGoods from './Business/addGoods';
 import Login from './Business/Login';
 import Register from './Business/Register';
+import UserCenter from './Business/UserCenter';
 
 export default [{
   path: '/',
@@ -13,6 +14,9 @@ export default [{
   }, {
     path: '/addGoods',
     component: addGoods
+  }, {
+    path: '/center',
+    component: UserCenter
   }]
 }, {
   path: '/login',

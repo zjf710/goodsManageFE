@@ -37,6 +37,15 @@
             placeholder="请输入身份证号"
           />
           <x-input
+            ref="username"
+            required
+            :is-type="idCardValidate"
+            title="名字"
+            v-model="username"
+            @on-change="setRegisterDisabled"
+            placeholder="请输入您的名字"
+          />
+          <x-input
             ref="mobile"
             required
             is-type="china-mobile"
@@ -79,6 +88,9 @@
 </template>
 
 <script>
+  import _ from 'lodash';
+  import { md5 } from 'vux';
+
   export default {
     name: 'register',
     data() {
@@ -89,6 +101,7 @@
         idCard: '',
         password: '',
         confirmPassword: '',
+        username: '',
         type: 1,
         registerDisabled: true
       };
@@ -122,8 +135,9 @@
           mobile: this.mobile,
           company: this.company,
           idCard: this.idCard,
-          password: this.password,
-          confirmPassword: this.confirmPassword,
+          username: this.username,
+          password: md5(this.password),
+          confirmPassword: md5(this.confirmPassword),
           type: this.type
         };
 
@@ -148,16 +162,14 @@
           });
       },
       setRegisterDisabled() {
-
-        if (!(this.mobile && this.password &&
-            this.confirmPassword  && this.idCard &&
+        if (!(this.mobile && this.password && this.username &&
+            this.confirmPassword && this.idCard &&
             (this.company || this.type === 2))) {
           this.registerDisabled = true;
         } else {
           this.registerDisabled = !(
-            this.$refs.mobile.valid && this.$refs.password.valid &&
-            this.$refs.idCard.valid && this.$refs.confirmPassword.valid &&
-            (this.type === 2 || this.$refs.company.valid)
+            this.$refs.mobile.valid &&
+            this.$refs.idCard.valid
           );
         }
       },
