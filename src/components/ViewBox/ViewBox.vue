@@ -3,7 +3,7 @@
     <div :class="this.$root.isiOS ? 'ios-header-top' : ''">
       <slot name="header" />
     </div>
-    <div class="view-box-body">
+    <div ref="viewBox" class="view-box-body" :style="{height: height}">
       <slot />
     </div>
     <slot name="bottom" />
@@ -12,12 +12,26 @@
 
 <script>
   export default {
-    name: 'view-box'
+    name: 'view-box',
+    data() {
+      return {
+        height: '100%'
+      };
+    },
+    mounted() {
+      const headerHeight = document.querySelector('.ios-header-top').getBoundingClientRect().height;
+      const buttomItem = document.querySelector('.weui-tabbar');
+      const buttomHeight = buttomItem ? buttomItem.getBoundingClientRect().height : 0;
+
+      this.height = `calc(100% - ${headerHeight + buttomHeight}px)`;
+    }
   };
 </script>
 
 <style>
   .gm-view-box {
+    display: -moz-box;
+    display: -webkit-box;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -25,6 +39,9 @@
   }
 
   .gm-view-box .view-box-body {
+    -moz-box-flex: 1;
+    -webkit-box-flex: 1;
+    -webkit-box: 1;
     flex: 1;
     position: relative;
     overflow: hidden;

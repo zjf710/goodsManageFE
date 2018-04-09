@@ -4,6 +4,7 @@ import addGoods from './Business/addGoods';
 import Login from './Business/Login';
 import Register from './Business/Register';
 import UserCenter from './Business/UserCenter';
+import UserOrders from './Business/UserOrders';
 
 export default [{
   path: '/',
@@ -18,6 +19,9 @@ export default [{
     path: '/center',
     component: UserCenter
   }]
+}, {
+  path: '/userOrders',
+  component: UserOrders
 }, {
   path: '/login',
   redirect: '/login/1'

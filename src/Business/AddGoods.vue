@@ -1,118 +1,122 @@
 <template>
   <div class="gm-add-goods">
-    <group label-width="5.5em" label-margin-right="1em" label-align="justify">
-      <popup-picker
-        title="选择起始地*"
-        placeholder="请选择起始地"
-        :data="areas"
-        :columns="3"
-        v-model="startPlace"
-        :display-format="formatAreas"
-      />
-      <x-input
-        required
-        title="详细地址*"
-        v-model="startPlaceDetail"
-        placeholder="请输入起始地详细地址"
-      />
-      <popup-picker
-        title="选择目的地*"
-        placeholder="请选择目的地"
-        :data="areas"
-        :columns="3"
-        v-model="endPlace"
-        :display-format="formatAreas"
-      />
-      <x-input
-        required
-        title="详细地址*"
-        v-model="endPlaceDetail"
-        placeholder="请输入目的地详细地址"
-      />
-      <cell
-        title="车长/车型*"
-        placeholder="请选择车长和车型"
-        :value="`${carLong.join(' ')}${carLongInput ? ` ${carLongInput}` : ''}/${carType}`"
-        is-link
-        @click.native="carPropertyShow = true"
-      />
-      <div class="goods-type">
-        <span>重货/泡货至少填写一项</span>
-        <div>
-          <input type="number" @change="(e)=>{goodsWeight = e.target.value}" placeholder="填写重货">吨
-          <input type="number" @change="(e)=>{goodsVolume = e.target.value}" placeholder="填写泡货">立方米
+    <div class="gm-add-goods-container">
+      <group label-width="6em" label-margin-right="1em" label-align="justify">
+        <popup-picker
+          title="选择起始地*"
+          placeholder="请选择起始地"
+          :data="areas"
+          :columns="3"
+          v-model="startPlace"
+          :display-format="formatAreas"
+        />
+        <x-input
+          required
+          title="详细地址*"
+          v-model="startPlaceDetail"
+          placeholder="请输入起始地详细地址"
+        />
+        <popup-picker
+          title="选择目的地*"
+          placeholder="请选择目的地"
+          :data="areas"
+          :columns="3"
+          v-model="endPlace"
+          :display-format="formatAreas"
+        />
+        <x-input
+          required
+          title="详细地址*"
+          v-model="endPlaceDetail"
+          placeholder="请输入目的地详细地址"
+        />
+        <cell
+          title="车长/车型*"
+          placeholder="请选择车长和车型"
+          :value="`${carLong.join(' ')}${carLongInput ? ` ${carLongInput}` : ''}/${carType}`"
+          is-link
+          @click.native="carPropertyShow = true"
+        />
+        <div class="goods-type">
+          <span>重货/泡货至少填写一项</span>
+          <div>
+            <input type="number" @change="(e)=>{goodsWeight = e.target.value}" placeholder="填写重货">吨
+            <input type="number" @change="(e)=>{goodsVolume = e.target.value}" placeholder="填写泡货">立方米
+          </div>
         </div>
+      </group>
+      <group class="goods-info" label-width="6em" label-margin-right="1em" label-align="justify">
+        <group-title slot="title" class="goods-info-title">填写以下信息，节省电话时间</group-title>
+        <x-input title="货物名称*" v-model="goodsName" placeholder="最多填写10个字" :max="10" />
+        <popup-picker
+          title="报价方"
+          placeholder="请选择报价方"
+          :data="priceSourceList"
+          v-model="priceSource"
+        />
+        <popup-picker
+          title="装卸方式"
+          placeholder="请选择装卸方式"
+          :data="loadTypeList"
+          v-model="loadType"
+          :display-format="(v) => `${v[0]}/${v[1]}`"
+        />
+        <datetime title="装车时间" v-model="loadTime" format="YYYY-MM-DD HH" />
+        <popup-picker
+          title="支付方式"
+          placeholder="请选择支付方式"
+          :data="payTypeList"
+          v-model="payType"
+        />
+        <x-input title="货物运费" v-model="price" placeholder="请输入期望运价（单位：元）" />
+        <x-textarea title="备注" v-model="comment" placeholder="最多填写140字" :max="140" :height="70" />
+      </group>
+      <div v-transfer-dom>
+        <popup v-model="carPropertyShow">
+          <div class="car-long-container">
+            <h4>车长（最多选择三个）</h4>
+            <checker
+              v-model="carLong"
+              type="check-box"
+              default-item-class="car-check-item"
+              selected-item-class="car-check-item-selected"
+              disabled-item-class="car-check-item-disabled"
+              :max="3"
+              radioRequired
+            >
+              <checker-item
+                :key="longValue"
+                v-for="longValue in carLongList"
+                :value="longValue"
+                @on-item-click="onItemClick"
+              >
+                {{longValue}}
+              </checker-item>
+            </checker>
+            <x-input v-model="carLongInput" class="long-input" placeholder="手动输入其他车长（单位：米）" />
+          </div>
+          <div class="car-long-container">
+            <h4>车型</h4>
+            <checker
+              v-model="carType"
+              radioRequired
+              default-item-class="car-check-item"
+              selected-item-class="car-check-item-selected"
+              disabled-item-class="car-check-item-disabled"
+            >
+              <checker-item
+                :key="typeValue"
+                v-for="typeValue in carTypeList"
+                :value="typeValue"
+              >
+                {{typeValue}}
+              </checker-item>
+            </checker>
+          </div>
+        </popup>
       </div>
-    </group>
-    <group class="goods-info" label-width="5.5em" label-margin-right="1em" label-align="justify">
-      <group-title slot="title" class="goods-info-title">填写以下信息，节省电话时间</group-title>
-      <x-input title="货物名称*" v-model="goodsName" placeholder="最多填写10个字" :max="10" />
-      <popup-picker
-        title="报价方"
-        placeholder="请选择报价方"
-        :data="priceSourceList"
-        v-model="priceSource"
-      />
-      <popup-picker
-        title="装卸方式"
-        placeholder="请选择装卸方式"
-        :data="loadTypeList"
-        v-model="loadType"
-        :display-format="(v) => `${v[0]}/${v[1]}`"
-      />
-      <datetime title="装车时间" v-model="loadTime" format="YYYY-MM-DD HH" @on-change="loadTimeChange" />
-      <popup-picker
-        title="支付方式"
-        placeholder="请选择支付方式"
-        :data="payTypeList"
-        v-model="payType"
-      />
-      <x-input title="货物运费" v-model="price" placeholder="请输入期望运价（单位：元）" />
-      <x-textarea title="备注" placeholder="最多填写140字" :max="140" :height="70" />
-    </group>
-    <x-button class="submit-goods" type="primary" @click.native="submitGoods">提 交 货 源</x-button>
-    <div v-transfer-dom>
-      <popup v-model="carPropertyShow">
-        <div class="car-long-container">
-          <h4>车长（最多选择三个）</h4>
-          <checker
-            v-model="carLong"
-            type="check-box"
-            default-item-class="car-check-item"
-            selected-item-class="car-check-item-selected"
-            disabled-item-class="car-check-item-disabled"
-            :max="3"
-            radioRequired
-          >
-            <checker-item
-              v-for="longValue in carLongList"
-              :value="longValue"
-              @on-item-click="onItemClick"
-            >
-              {{longValue}}
-            </checker-item>
-          </checker>
-          <x-input v-model="carLongInput" class="long-input" placeholder="手动输入其他车长（单位：米）" />
-        </div>
-        <div class="car-long-container">
-          <h4>车型</h4>
-          <checker
-            v-model="carType"
-            radioRequired
-            default-item-class="car-check-item"
-            selected-item-class="car-check-item-selected"
-            disabled-item-class="car-check-item-disabled"
-          >
-            <checker-item
-              v-for="typeValue in carTypeList"
-              :value="typeValue"
-            >
-              {{typeValue}}
-            </checker-item>
-          </checker>
-        </div>
-      </popup>
     </div>
+    <x-button class="submit-goods" type="primary" @click.native="submitGoods">提 交 货 源</x-button>
   </div>
 </template>
 
@@ -163,9 +167,6 @@
     methods: {
       formatAreas(value, name) {
         return name;
-      },
-      loadTimeChange(v) {
-        console.log(moment(v).valueOf());
       },
       onItemClick(v) {
         if (this.carLong.length === 0) {
@@ -362,10 +363,16 @@
   .gm-add-goods {
     height: 100%;
     width: 100%;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  .gm-add-goods-container {
+    height: 100%;
+    width: 100%;
     overflow: scroll;
     position: relative;
-    padding-bottom: 50px;
-    box-sizing: border-box;
   }
 
   .gm-add-goods .weui-cells {
@@ -373,9 +380,9 @@
   }
 
   .gm-add-goods .submit-goods {
-    position: fixed;
+    position: absolute;
     font-size: 14px;
-    bottom: 53px;
+    bottom: 0;
     height: 40px;
   }
 
@@ -414,6 +421,10 @@
     text-align: center;
     border-radius: 5px;
     margin: 0 5px 10px 10px;
+  }
+
+  .gm-add-goods .goods-info {
+    margin-bottom: 50px;
   }
 
   .gm-add-goods .goods-info .goods-info-title {

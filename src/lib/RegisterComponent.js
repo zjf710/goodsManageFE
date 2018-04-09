@@ -14,6 +14,8 @@ import {
   ButtonTabItem,
   Checker,
   CheckerItem,
+  Flexbox,
+  FlexboxItem,
   PopupPicker,
   Datetime,
   Search,
@@ -50,6 +52,8 @@ export default (VueTemp) => {
   Vue.component('ButtonTabItem', ButtonTabItem);
   Vue.component('Checker', Checker);
   Vue.component('CheckerItem', CheckerItem);
+  Vue.component('Flexbox', Flexbox);
+  Vue.component('FlexboxItem', FlexboxItem);
   Vue.component('PopupPicker', PopupPicker);
   Vue.component('Datetime', Datetime);
 

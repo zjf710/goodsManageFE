@@ -3,7 +3,8 @@ import _ from 'lodash';
 
 import { getLocalStorageCache } from '../components/utils/CacheService';
 
-const apiBase = 'http://localhost:8081/';
+const apiBase = 'http://192.168.0.108:8081/';
+// const apiBase = 'http://localhost:8081/';
 
 // 请求前的处理
 /* eslint no-unused-vars:off */

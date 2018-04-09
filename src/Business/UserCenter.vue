@@ -1,7 +1,7 @@
 <template>
   <div class="gm-user-center">
     <group>
-      <cell title="货物详情" is-link />
+      <cell title="我的货单" is-link link="/userOrders" />
     </group>
 
     <div class="button-container">

@@ -86,7 +86,7 @@
 
             if (data.status === 200) {
               setLocalStorageCache('user', this.mobile);
-              setLocalStorageCache('userType', this.type);
+              setLocalStorageCache('userType', parseInt(this.type, 10));
               this.$router.push('/');
             } else {
               this.$vux.toast.show({
