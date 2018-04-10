@@ -11,7 +11,7 @@
         </svg>
         <span slot="label">首页</span>
       </tabbar-item>
-      <tabbar-item v-if="userType === '1'" :selected="$route.path === '/addGoods'" link="/addGoods">
+      <tabbar-item v-if="userType === 1" :selected="$route.path === '/addGoods'" link="/addGoods">
         <svg slot="icon" class="svg-icon" aria-hidden="true">
           <use xlink:href="#icon-plus"></use>
         </svg>

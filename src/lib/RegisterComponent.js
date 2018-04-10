@@ -22,6 +22,7 @@ import {
   CheckIcon,
   ToastPlugin,
   LoadingPlugin,
+  ConfirmPlugin,
   TransferDom
 } from 'vux';
 
@@ -69,4 +70,6 @@ export default (VueTemp) => {
   });
   // loading工具
   Vue.use(LoadingPlugin);
+  // confirm组件
+  Vue.use(ConfirmPlugin);
 };

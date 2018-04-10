@@ -1,6 +1,6 @@
 <template>
   <div class="gm-view-box">
-    <div :class="this.$root.isiOS ? 'ios-header-top' : ''">
+    <div :class="`gm-view-box-header${this.$root.isiOS ? ' ios-header-top' : ''}`">
       <slot name="header" />
     </div>
     <div ref="viewBox" class="view-box-body" :style="{height: height}">
@@ -19,7 +19,7 @@
       };
     },
     mounted() {
-      const headerHeight = document.querySelector('.ios-header-top').getBoundingClientRect().height;
+      const headerHeight = document.querySelector('.gm-view-box-header').getBoundingClientRect().height;
       const buttomItem = document.querySelector('.weui-tabbar');
       const buttomHeight = buttomItem ? buttomItem.getBoundingClientRect().height : 0;
 

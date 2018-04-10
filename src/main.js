@@ -51,3 +51,38 @@ new Vue({
   router,
   render: h => h(App)
 }).$mount('#app-box');
+
+let backButtonClicked = false;
+// 硬件检测，注册事件
+document.addEventListener('deviceready', () => {
+  try {
+    document.addEventListener('backbutton', (e) => {
+      e.preventDefault();
+
+      // 点两次退出app
+      if (backButtonClicked) {
+        Vue.$vux.confirm.show({
+          title: '退出',
+          content: '确认退出应用吗？',
+          onConfirm() {
+            navigator.app.exitApp();
+          }
+        });
+        return;
+      }
+
+      backButtonClicked = true;
+      setTimeout(() => {
+        backButtonClicked = false;
+      }, 300);
+
+      // 首页点返回提示退出app
+      if (location.hash !== '#/') {
+        history.back();
+      }
+    }, false);
+  } catch (e) {
+    // eslint-disable-next-line
+    console.log('设备检测失败');
+  }
+}, false);

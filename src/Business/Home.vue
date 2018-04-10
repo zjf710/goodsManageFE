@@ -7,7 +7,7 @@
       <div class="goods-info" @click="doShowDetail(goods)">
         <p>{{goods.start_place}} — {{goods.end_place}}</p>
         <p>{{goods.car_long}} / {{goods.car_type}}</p>
-        <p>{{goods.username}} / {{getTime(goods.createTime)}}</p>
+        <p>{{goods.username}} / {{getTime(goods.create_time)}}</p>
       </div>
       <a class="phone" :href="`tel:${goods.publish_man}`">
         <svg slot="icon" class="svg-icon" aria-hidden="true">
@@ -34,7 +34,7 @@
             <cell v-if="goodsInfo.goods_volume" title="泡货">{{goodsInfo.goods_volume}}立方米</cell>
             <cell v-if="goodsInfo.price_source" title="报价方">{{goodsInfo.price_source}}</cell>
             <cell v-if="goodsInfo.load_type" title="装卸方式">{{goodsInfo.load_type}}</cell>
-            <cell v-if="goodsInfo.load_time" title="装车时间">{{goodsInfo.load_time}}</cell>
+            <cell v-if="goodsInfo.load_time" title="装车时间">{{getTime(goodsInfo.load_time)}}</cell>
             <cell v-if="goodsInfo.pay_type" title="支付方式">{{goodsInfo.pay_type}}</cell>
             <cell v-if="goodsInfo.price" title="货物运费">{{goodsInfo.price}}</cell>
             <cell v-if="goodsInfo.comment" title="备注">{{goodsInfo.comment}}</cell>
@@ -75,7 +75,7 @@
     },
     methods: {
       getTime(timestamp) {
-        return moment(timestamp).format('YYYY-MM-DD');
+        return moment(timestamp).format('YYYY-MM-DD HH:mm');
       },
       doShowDetail(goods) {
         this.showDetail = true;

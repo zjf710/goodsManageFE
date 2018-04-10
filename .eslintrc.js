@@ -23,7 +23,8 @@ module.exports = {
     }
   },
   globals: {
-    document: true
+    document: true,
+    device: true
   },
   // add your custom rules here
   rules: {
