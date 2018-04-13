@@ -1,7 +1,15 @@
-export default (Vue) => {
-  // 转小写
-  Vue.filter('filterA', value => value || value.toLowerCase());
+import _ from 'lodash';
 
-  // 转大写
-  Vue.filter('filterB', value => value || value.toUpperCase());
+export default (Vue) => {
+  // 过滤货物列表
+  Vue.filter('goodsFilterA', (goodsList, conditions) => {
+    const startCityId = conditions.startPlace.city_id;
+
+    const endCityId = conditions.endPlace.city_id;
+
+    return _.filter(goodsList, goods => (
+      goods.start_city === startCityId &&
+      goods.end_city === endCityId
+    ));
+  });
 };

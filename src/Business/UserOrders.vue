@@ -5,21 +5,25 @@
     </x-header>
 
     <div class="gm-goods-list">
+      <goods-filter @on-change="filterChange" />
       <div class="empty-text" v-if="goodsList.length === 0">
         暂无数据
       </div>
-      <div class="goods-item" v-for="goods in goodsList">
-        <div class="goods-info" @click="doShowDetail(goods)">
-          <p>{{goods.start_place}} — {{goods.end_place}}</p>
-          <p>{{goods.car_long}} / {{goods.car_type}}</p>
-          <p>{{goods.username}} / {{getTime(goods.create_time)}}</p>
-          <p>订单状态：{{getStatus(goods.status)}}</p>
+
+      <div v-else class="goods-item-list">
+        <div class="goods-item" v-for="goods in goodsList">
+          <div class="goods-info" @click="doShowDetail(goods)">
+            <p>{{goods.start_place}} — {{goods.end_place}}</p>
+            <p>{{goods.car_long}} / {{goods.car_type}}</p>
+            <p>{{goods.username}} / {{getTime(goods.create_time)}}</p>
+            <p>订单状态：{{getStatus(goods.status)}}</p>
+          </div>
+          <a v-if="(userType === 1 && goods.status !== 0) || userType === 2" class="phone" :href="`tel:${userType === 1 ? goods.orderTaker : goods.publish_man}`">
+            <svg slot="icon" class="svg-icon" aria-hidden="true">
+              <use xlink:href="#icon-phone"></use>
+            </svg>
+          </a>
         </div>
-        <a v-if="(userType === 1 && goods.status !== 0) || userType === 2" class="phone" :href="`tel:${userType === 1 ? goods.orderTaker : goods.publish_man}`">
-          <svg slot="icon" class="svg-icon" aria-hidden="true">
-            <use xlink:href="#icon-phone"></use>
-          </svg>
-        </a>
       </div>
       <div v-transfer-dom>
         <x-dialog v-model="showDetail" class="goods-info-dialog" hide-on-blur>
@@ -77,9 +81,13 @@
   import _ from 'lodash';
   import moment from 'moment';
   import { getLocalStorageCache } from '../components/utils/CacheService';
+  import GoodsFilter from '../components/GoodsFilter/GoodsFilter';
 
   export default {
     name: 'user-orders',
+    components: {
+      GoodsFilter
+    },
     data() {
       const userType = getLocalStorageCache('userType');
       const user = getLocalStorageCache('user');
@@ -116,6 +124,15 @@
           default:
             return '';
         }
+      },
+      filterChange(conditions) {
+        const startCityId = _.get(conditions, 'startPlace.city_id');
+        const endCityId = _.get(conditions, 'endPlace.city_id');
+
+        this.goodsList = _.filter(this.goodsListOrg, goods => (
+          (!startCityId || goods.start_city === startCityId) &&
+          (!endCityId || goods.end_city === endCityId)
+        ));
       },
       doShowDetail(goods) {
         this.showDetail = true;
@@ -155,7 +172,8 @@
             const data = _.get(res, 'data', {});
 
             if (data.status === 200) {
-              this.goodsList = _.sortBy(data.data, 'status');
+              this.goodsListOrg = data.data;
+              this.goodsList = _.cloneDeep(this.goodsListOrg);
             } else {
               this.$vux.toast.show({
                 type: 'cancel',
@@ -179,6 +197,13 @@
     text-align: center;
     color: #999;
     margin-top: 100px;
+  }
+
+  .gm-goods-list .goods-item-list {
+    border-top: 1px solid #d9d9d9;
+    height: calc(100% - 55px);
+    overflow: scroll;
+    box-sizing: border-box;
   }
 
   .gm-goods-list .goods-item {

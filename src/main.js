@@ -52,32 +52,35 @@ new Vue({
   render: h => h(App)
 }).$mount('#app-box');
 
-let backButtonClicked = false;
+let showConfirm = false;
+
 // 硬件检测，注册事件
 document.addEventListener('deviceready', () => {
   try {
     document.addEventListener('backbutton', (e) => {
       e.preventDefault();
 
-      // 点两次退出app
-      if (backButtonClicked) {
+      // 首页或登录点返回提示退出app
+      if (location.hash === '#/' || location.hash.indexOf('#/login/') >= 0) {
+        // 已经出现对话框则关闭对话框
+        if (showConfirm) {
+          Vue.$vux.confirm.hide();
+          showConfirm = false;
+          return;
+        }
+
+        showConfirm = true;
         Vue.$vux.confirm.show({
           title: '退出',
           content: '确认退出应用吗？',
+          onHide() {
+            showConfirm = false;
+          },
           onConfirm() {
             navigator.app.exitApp();
           }
         });
-        return;
-      }
-
-      backButtonClicked = true;
-      setTimeout(() => {
-        backButtonClicked = false;
-      }, 300);
-
-      // 首页点返回提示退出app
-      if (location.hash !== '#/') {
+      } else {
         history.back();
       }
     }, false);

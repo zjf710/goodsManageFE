@@ -124,7 +124,10 @@
   import _ from 'lodash';
   import moment from 'moment';
   import { querystring } from 'vux';
-  import { getLocalStorageCache } from '../components/utils/CacheService';
+  import { getLocalStorageCache, setLocalStorageCache } from '../components/utils/CacheService';
+
+  // 7天过期
+  const expire = new Date().getTime() + (7 * 24 * 60 * 60 * 1000);
 
   export default {
     name: 'add-goods',
@@ -158,11 +161,22 @@
         payTypeList: [['回单结账', '货到打卡', '现付+到付']]
       };
     },
-    mounted() {
+    beforeMount() {
       // 获取地理位置列表
-      this.getProvinces();
+      const areas = getLocalStorageCache('areas');
+      if (areas) {
+        this.areas = areas;
+      } else {
+        this.getProvinces();
+      }
+
       // 获取车型车长列表
-      this.getCarProperties();
+      const carProperties = getLocalStorageCache('carProperties');
+      if (carProperties) {
+        this.setCarLongType(carProperties);
+      } else {
+        this.getCarProperties();
+      }
     },
     methods: {
       formatAreas(value, name) {
@@ -258,21 +272,10 @@
             const data = _.get(res, 'data', {});
 
             if (data.status === 200) {
-              const carLongList = [];
-              const carTypeList = [];
-              // 组装数据
-              _.get(data, 'data').forEach((item) => {
-                if (item.type === 'long') {
-                  carLongList.push(item.value);
-                } else {
-                  carTypeList.push(item.value);
-                }
-              });
+              const carProperties = _.get(data, 'data');
+              this.setCarLongType(carProperties);
 
-              this.carLongList = carLongList;
-              this.carLong = [carLongList[0]];
-              this.carTypeList = carTypeList;
-              this.carType = carTypeList[0];
+              setLocalStorageCache('carProperties', carProperties, expire);
             } else {
               this.$vux.toast.show({
                 type: 'cancel',
@@ -281,6 +284,23 @@
               });
             }
           });
+      },
+      setCarLongType(carProperties) {
+        const carLongList = [];
+        const carTypeList = [];
+        // 组装数据
+        carProperties.forEach((item) => {
+          if (item.type === 'long') {
+            carLongList.push(item.value);
+          } else {
+            carTypeList.push(item.value);
+          }
+        });
+
+        this.carLongList = carLongList;
+        this.carLong = [carLongList[0]];
+        this.carTypeList = carTypeList;
+        this.carType = carTypeList[0];
       },
       // 获取省份
       getProvinces() {
@@ -293,7 +313,8 @@
                 this.areas.push({
                   name: province.province,
                   value: province.provinceId,
-                  parent: 0
+                  parent: 0,
+                  type: 'province'
                 });
               });
 
@@ -318,7 +339,8 @@
                 this.areas.push({
                   name: city.city,
                   value: city.cityId,
-                  parent: city.provinceId
+                  parent: city.provinceId,
+                  type: 'city'
                 });
               });
 
@@ -343,9 +365,12 @@
                 this.areas.push({
                   name: area.area,
                   value: area.areaId,
-                  parent: area.cityId
+                  parent: area.cityId,
+                  type: 'area'
                 });
               });
+
+              setLocalStorageCache('areas', this.areas, expire);
             } else {
               this.$vux.toast.show({
                 type: 'cancel',

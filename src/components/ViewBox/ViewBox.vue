@@ -30,8 +30,6 @@
 
 <style>
   .gm-view-box {
-    display: -moz-box;
-    display: -webkit-box;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -39,9 +37,6 @@
   }
 
   .gm-view-box .view-box-body {
-    -moz-box-flex: 1;
-    -webkit-box-flex: 1;
-    -webkit-box: 1;
     flex: 1;
     position: relative;
     overflow: hidden;

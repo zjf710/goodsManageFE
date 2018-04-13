@@ -1,12 +1,22 @@
+// 删除本地缓存
+export function removeLocalStorageCache(key) {
+  const {
+    localStorage
+  } = window;
+
+  localStorage.removeItem(key);
+}
+
 // 保存本地缓存
-export function setLocalStorageCache(key, value) {
+export function setLocalStorageCache(key, value, expire) {
   const {
     localStorage
   } = window;
   // 转为json后存入缓存
   const saveValue = JSON.stringify({
     timestamp: new Date().getTime(),
-    value
+    value,
+    expire
   });
   localStorage.setItem(key, saveValue);
 }
@@ -23,16 +33,14 @@ export function getLocalStorageCache(key) {
     return null;
   }
   const orgValue = JSON.parse(valueJson);
-  return orgValue.value;
-}
 
-// 删除本地缓存
-export function removeLocalStorageCache(key) {
-  const {
-    localStorage
-  } = window;
+  if (!orgValue.expire || new Date().getTime() < orgValue.expire) {
+    return orgValue.value;
+  }
 
-  localStorage.removeItem(key);
+  // 过期删除缓存
+  removeLocalStorageCache(key);
+  return null;
 }
 
 // 获取本地缓存信息
@@ -49,3 +57,32 @@ export function getLocalStorageInfo(key) {
 
   return JSON.parse(valueJson);
 }
+
+
+export const memoryCache = (() => {
+  const cache = {};
+  return {
+    // 设置内存缓存
+    setMemoryCache(key, value) {
+      // 存入时间戳
+      cache[key] = {
+        timestamp: new Date().getTime(),
+        value
+      };
+    },
+    // 获取内存缓存值
+    getMemoryCache(key) {
+      return cache[key] === undefined ? undefined : cache[key].value;
+    },
+    // 删除内存缓存
+    removeMemoryCache(key) {
+      if (key !== undefined) {
+        cache[key] = undefined;
+      }
+    },
+    // 获取内存缓存信息
+    getMemoryCacheInfo(key) {
+      return cache[key];
+    }
+  };
+})();

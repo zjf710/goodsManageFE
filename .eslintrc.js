@@ -14,14 +14,6 @@ module.exports = {
   plugins: [
     'html'
   ],
-  // check if imports actually resolve
-  settings: {
-    'import/resolver': {
-      webpack: {
-        config: 'build/webpack.base.conf.js'
-      }
-    }
-  },
   globals: {
     document: true,
     device: true

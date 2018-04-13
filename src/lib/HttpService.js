@@ -3,9 +3,9 @@ import _ from 'lodash';
 
 import { getLocalStorageCache } from '../components/utils/CacheService';
 
-// const apiBase = 'http://115.230.126.83:8081/';
+const apiBase = 'http://115.230.126.83:8081/';
 // const apiBase = 'http://192.168.0.108:8081/';
-const apiBase = 'http://172.16.12.76:8081/';
+// const apiBase = 'http://172.16.12.76:8081/';
 
 // 请求前的处理
 /* eslint no-unused-vars:off */
